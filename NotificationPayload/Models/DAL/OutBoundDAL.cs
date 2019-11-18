@@ -12,11 +12,10 @@ namespace NotificationPayload.Models.DAL
     {
         public void SaveNotificationPayload(string eventType, Account account)
         {
-           
+            String strConnString = ConfigurationManager.ConnectionStrings["connectionRPS"].ConnectionString;
+            SqlConnection con = new SqlConnection(strConnString);
             try
-            {
-                String strConnString = ConfigurationManager.ConnectionStrings["connectionRPS"].ConnectionString;
-                SqlConnection con = new SqlConnection(strConnString);
+            {                
                 SqlCommand cmd = new SqlCommand()
                 {
                     CommandType = CommandType.StoredProcedure,
@@ -53,7 +52,8 @@ namespace NotificationPayload.Models.DAL
             }
             finally
             {
-
+                con.Close();
+                con.Dispose();
             }
         }
     }

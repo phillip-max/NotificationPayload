@@ -163,7 +163,7 @@ D:\Code\NotificationPayload\NotificationPayload\obj\Debug\NotificationPayload.cs
 D:\Code\NotificationPayload\NotificationPayload\obj\Debug\NotificationPayload.csproj.CopyComplete
 D:\Code\NotificationPayload\NotificationPayload\obj\Debug\NotificationPayload.dll
 D:\Code\NotificationPayload\NotificationPayload\obj\Debug\NotificationPayload.pdb
-D:\Code\NotificationPayload\NotificationPayload\obj\Debug\NotificationPayload.csprojAssemblyReference.cache
 D:\Code\NotificationPayload\NotificationPayload\bin\Security.Cryptography.dll
 D:\Code\NotificationPayload\NotificationPayload\bin\Security.Cryptography.pdb
 D:\Code\NotificationPayload\NotificationPayload\bin\Security.Cryptography.xml
+D:\Code\NotificationPayload\NotificationPayload\obj\Debug\NotificationPayload.csprojAssemblyReference.cache

@@ -9,7 +9,12 @@ namespace NotificationPayload
     {
         public static void Register(HttpConfiguration config)
         {
+
+
             // Web API configuration and services
+            var json = config.Formatters.JsonFormatter;
+            json.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.None;
+            config.Formatters.Remove(config.Formatters.XmlFormatter);
 
             // Web API routes
             config.MapHttpAttributeRoutes();
@@ -19,6 +24,8 @@ namespace NotificationPayload
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            
         }
+        
     }
 }

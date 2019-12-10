@@ -79,7 +79,7 @@ namespace NotificationPayload.Models
 
                     var decryptedPayload = Convert.ToBase64String(plainText);
                     string result = System.Text.Encoding.UTF8.GetString(plainText);
-                    return decryptedPayload;
+                    return result;
 
                 }
             }

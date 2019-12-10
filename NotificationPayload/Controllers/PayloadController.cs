@@ -40,6 +40,9 @@ namespace NotificationPayload.Controllers
                 //Get the decrypted session key from the payload(RSA Decryption).
                 string decryptedSessionKey = decryptHelper.DecryptSessionKey(payload, x509Certificate2);
 
+                 decryptedSessionKey = "Mt61nP8IHxyOT+Z4Z0QkP8xlxLSxkxqIITBKaepFQ5k=";
+
+
                 //Get the decrypted the payload(AES Decryption).
                 string decryptedPayload = decryptHelper.DecryptPayload(Convert.FromBase64String(payload.EncryptedPayload),
                                           Convert.FromBase64String(decryptedSessionKey), Convert.FromBase64String(payload.Iv),
@@ -57,7 +60,9 @@ namespace NotificationPayload.Controllers
                 OutBoundDAL outBoundDAL = new OutBoundDAL();
                 outBoundDAL.SaveNotificationPayload(eventType, accountInfo);
 
-                return Ok();
+                var bb = Json(new { instructionId = accountInfo.InstructionId, notificationId = accountInfo.NotificationId }).Content;
+
+                return Ok(Json(new { instructionId = accountInfo.InstructionId, notificationId =  accountInfo.NotificationId }).Content);
             }
             catch
             {

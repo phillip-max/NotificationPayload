@@ -159,5 +159,23 @@ namespace NotificationPayload.Models
             return Convert.ToBase64String(cipherTextBytes.ToArray());
         }
 
+        public void SaveEncryptedPayloadLog(Payload payload)
+        {
+            String timeStamp = DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss-ffff");
+            string path = @"E:\Paynow\Logs\Payload_" + timeStamp +".txt";
+            if (!File.Exists(path))
+            {
+                // Create a file to write to.
+                using (StreamWriter sw = File.CreateText(path))
+                {
+                    sw.WriteLine("EncryptedPayload=" + payload.EncryptedPayload);
+                    sw.WriteLine("EncryptedSessionKey=" + payload.EncryptedSessionKey);
+                    sw.WriteLine("Iv=" + payload.Iv);
+                    sw.WriteLine("PayloadSignature=" + payload.PayloadSignature);                   
+                }
+            }
+        }
+        
+
     }
 }

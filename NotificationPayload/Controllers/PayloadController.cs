@@ -24,10 +24,13 @@ namespace NotificationPayload.Controllers
         [Route("api/decryptpayload")]
         public IHttpActionResult DecryptPayload(Payload payload)
         {
+            string ss = "api called";
             try
             {
 
                 DecryptHelper decryptHelper = new DecryptHelper();
+
+                decryptHelper.SaveEncryptedPayloadLog(payload);
 
                 X509Certificate2 x509Certificate2 = decryptHelper.LoadCertificate(StoreLocation.LocalMachine, "CN=upayload-uat.phillip.com.sg, O=Phillip Securities Pte Ltd, OU=IT Operations Department, L=Singapore, S=Singapore, C=SG");
 
@@ -37,28 +40,44 @@ namespace NotificationPayload.Controllers
                 if (!x509Certificate2.HasPrivateKey)
                     throw new Exception("x509 certicate does not contain a private key for decryption");
 
+                ss = ss + " certificate Fetched";
+
+                if (!x509Certificate2.Verify())
+                    throw new Exception("x509 certicate in valid");
+
                 //Get the decrypted session key from the payload(RSA Decryption).
                 string decryptedSessionKey = decryptHelper.DecryptSessionKey(payload, x509Certificate2);
 
                  decryptedSessionKey = "Mt61nP8IHxyOT+Z4Z0QkP8xlxLSxkxqIITBKaepFQ5k=";
 
+                ss = ss + " session key decryption done";
 
                 //Get the decrypted the payload(AES Decryption).
                 string decryptedPayload = decryptHelper.DecryptPayload(Convert.FromBase64String(payload.EncryptedPayload),
                                           Convert.FromBase64String(decryptedSessionKey), Convert.FromBase64String(payload.Iv),
                                           Convert.FromBase64String("cmFuZG9t"));
 
+
+                ss = ss + " payload decryption done";
+
+
                 if (!decryptHelper.VerifySignature(decryptedPayload, payload.PayloadSignature, x509Certificate2))
                 {
                     throw new Exception("Signature matching failed");
-                }               
+                }
+
+                ss = ss + " signature verified";
 
                 string eventType = string.Empty;
                 var accountInfo = Account.DeserializeAccountData(decryptedPayload, out eventType);
 
+
+                ss = ss + " deserialize done";
                 //Save the decrypted payload information in RPS table.
                 OutBoundDAL outBoundDAL = new OutBoundDAL();
-                outBoundDAL.SaveNotificationPayload(eventType, accountInfo);               
+                outBoundDAL.SaveNotificationPayload(eventType, accountInfo);
+
+                ss = ss + " saved in DB";
 
                 return Ok(Json(new { instructionId = accountInfo.InstructionId, notificationId =  accountInfo.NotificationId }).Content);
             }

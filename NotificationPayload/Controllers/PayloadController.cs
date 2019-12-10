@@ -29,7 +29,7 @@ namespace NotificationPayload.Controllers
 
                 DecryptHelper decryptHelper = new DecryptHelper();
 
-                X509Certificate2 x509Certificate2 = decryptHelper.LoadCertificate(StoreLocation.LocalMachine, "storeName=My");
+                X509Certificate2 x509Certificate2 = decryptHelper.LoadCertificate(StoreLocation.LocalMachine, "CN=upayload-uat.phillip.com.sg, O=Phillip Securities Pte Ltd, OU=IT Operations Department, L=Singapore, S=Singapore, C=SG");
 
                 if (x509Certificate2 == null)
                     throw new Exception("A x509 certificate and string for decryption must be provided");
@@ -58,9 +58,7 @@ namespace NotificationPayload.Controllers
 
                 //Save the decrypted payload information in RPS table.
                 OutBoundDAL outBoundDAL = new OutBoundDAL();
-                outBoundDAL.SaveNotificationPayload(eventType, accountInfo);
-
-                var bb = Json(new { instructionId = accountInfo.InstructionId, notificationId = accountInfo.NotificationId }).Content;
+                outBoundDAL.SaveNotificationPayload(eventType, accountInfo);               
 
                 return Ok(Json(new { instructionId = accountInfo.InstructionId, notificationId =  accountInfo.NotificationId }).Content);
             }

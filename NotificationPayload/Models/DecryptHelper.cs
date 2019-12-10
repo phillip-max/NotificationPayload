@@ -123,7 +123,7 @@ namespace NotificationPayload.Models
             store.Open(OpenFlags.ReadOnly);
             X509Certificate2Collection certCollection = store.Certificates;
 
-            X509Certificate2 cert = certCollection.Cast<X509Certificate2>().FirstOrDefault();         
+            X509Certificate2 cert = certCollection.Cast<X509Certificate2>().FirstOrDefault(c => c.Subject == certificateName);         
 
             if (cert == null)
                  throw new Exception("was found in your certificate store");

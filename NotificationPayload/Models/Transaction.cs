@@ -1,13 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using Newtonsoft.Json.Linq;
 
 namespace NotificationPayload.Models
 {
-    public class Account
+    public class Transaction
     {
         public string AccountName { get; set; }
         public string AccountType { get; set; }
@@ -32,21 +27,27 @@ namespace NotificationPayload.Models
         public string TransactionDescription { get; set; }
 
 
-        public static Account DeserializeAccountData(string AccountDataJson, out string transType)
+        public static Transaction DeserializeAccountData(string TransactionDataJson, out string transType)
         {
-            JObject obj = JObject.Parse(AccountDataJson);
+            JObject obj = JObject.Parse(TransactionDataJson);
 
             //Transatciontype credit / Debit
-            transType = (string)obj.SelectToken("event");
+            transType =(string)obj.SelectToken("event");
+
+            
 
             //get account data from json.
-            var accountData = obj.SelectToken("data");
+            var transactionData = obj.SelectToken("data");
 
-            var accountInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<Account>(accountData.ToString());
+            var transactionInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<Transaction>(transactionData.ToString());
 
-            return accountInfo;
+            return transactionInfo;
         }
-       
+
+        public static string GetFormattedAccNo(string transctionText)
+        {
+            return (transctionText.Replace(" ", string.Empty)).Trim();
+        }
 
     }
 }

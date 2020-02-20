@@ -91,10 +91,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/18/2018 09:44:54</publishTime>
     </File>
     <File Include="bin/NotificationPayload.dll">
-      <publishTime>11/19/2019 17:52:17</publishTime>
+      <publishTime>01/10/2020 14:42:35</publishTime>
     </File>
     <File Include="bin/NotificationPayload.pdb">
-      <publishTime>11/19/2019 17:52:17</publishTime>
+      <publishTime>01/10/2020 14:42:35</publishTime>
     </File>
     <File Include="bin/roslyn/csc.exe">
       <publishTime>05/24/2018 13:38:22</publishTime>
@@ -364,7 +364,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/21/2019 16:43:36</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>11/19/2019 17:41:45</publishTime>
+      <publishTime>01/08/2020 13:02:11</publishTime>
     </File>
   </ItemGroup>
 </Project>

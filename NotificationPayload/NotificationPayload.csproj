@@ -167,7 +167,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Account.cs" />
+    <Compile Include="Models\Transaction.cs" />
     <Compile Include="Models\DAL\OutBoundDAL.cs" />
     <Compile Include="Models\DecryptHelper.cs" />
     <Compile Include="Models\Payload.cs" />

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace NotificationPayload.Models
+﻿namespace NotificationPayload.Models
 {
     public class Payload
     {
@@ -11,5 +6,7 @@ namespace NotificationPayload.Models
         public string EncryptedSessionKey { get; set; }
         public string Iv { get; set; }
         public string PayloadSignature { get; set; }
+
+        public string Error { get; set; }
     }
 }

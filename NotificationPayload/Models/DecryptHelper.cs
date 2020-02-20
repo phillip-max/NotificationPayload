@@ -1,4 +1,5 @@
-﻿using Org.BouncyCastle.Asn1.Pkcs;
+﻿using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Pkcs;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Encodings;
 using Org.BouncyCastle.Crypto.Engines;
@@ -24,16 +25,16 @@ namespace NotificationPayload.Models
         /// <param name="payload">Actual Payload</param>
         /// <returns></returns>
         public string DecryptSessionKey(Payload payload, X509Certificate2 x509Certificate2)
-        {           
+        {
 
             var ciphertext = payload.EncryptedSessionKey;
             byte[] cipherTextBytes = Convert.FromBase64String(ciphertext);
 
             RSACryptoServiceProvider rsaCryptoServiceProvider = (RSACryptoServiceProvider)x509Certificate2.PrivateKey;
             var asymmetricCipherKey = DotNetUtilities.GetRsaKeyPair(rsaCryptoServiceProvider);
-       
+
             // PKCS1 v1.5 paddings
-            Pkcs1Encoding eng = new Pkcs1Encoding(new RsaEngine()); 
+            Pkcs1Encoding eng = new Pkcs1Encoding(new RsaEngine());
             eng.Init(false, asymmetricCipherKey.Private);
 
             int length = cipherTextBytes.Length;
@@ -77,17 +78,28 @@ namespace NotificationPayload.Models
 
                     cipher.DoFinal(plainText, len);
 
-                    var decryptedPayload = Convert.ToBase64String(plainText);
-                    string result = System.Text.Encoding.UTF8.GetString(plainText);
-                    return result;
+                    //var decryptedPayload = Convert.ToBase64String(plainText);
+                    //string result = System.Text.Encoding.UTF8.GetString(plainText);
+                    //return result;
+
+                    var decryptedPayload = System.Text.Encoding.UTF8.GetString(plainText);
+                    return decryptedPayload;
 
                 }
             }
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="PayloadInfo"></param>
+        /// <param name="expectedPayloadSignature"></param>
+        /// <param name="x509Certificate2"></param>
+        /// <returns></returns>
         public bool VerifySignature(string PayloadInfo, string expectedPayloadSignature, X509Certificate2 x509Certificate2)
         {
+
             RSA rSA = (RSA)x509Certificate2.GetRSAPublicKey();
 
             var rsaPublicKey = DotNetUtilities.GetRsaPublicKey(rSA);
@@ -116,6 +128,12 @@ namespace NotificationPayload.Models
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="storeLocation"></param>
+        /// <param name="certificateName"></param>
+        /// <returns></returns>
         public X509Certificate2 LoadCertificate(StoreLocation storeLocation, string certificateName)
         {
             X509Store store = new X509Store(storeLocation);
@@ -123,10 +141,10 @@ namespace NotificationPayload.Models
             store.Open(OpenFlags.ReadOnly);
             X509Certificate2Collection certCollection = store.Certificates;
 
-            X509Certificate2 cert = certCollection.Cast<X509Certificate2>().FirstOrDefault(c => c.Subject == certificateName);         
+            X509Certificate2 cert = certCollection.Cast<X509Certificate2>().FirstOrDefault(c => c.Subject == certificateName);
 
             if (cert == null)
-                 throw new Exception("was found in your certificate store");
+                throw new Exception("was found in your certificate store");
 
             store.Close();
 
@@ -140,7 +158,7 @@ namespace NotificationPayload.Models
             var asymmetricCipherKey = DotNetUtilities.GetRsaPublicKey(rsaCryptoServiceProvider);
 
             // PKCS1 v1.5 paddings
-            Pkcs1Encoding eng = new Pkcs1Encoding(new RsaEngine());           
+            Pkcs1Encoding eng = new Pkcs1Encoding(new RsaEngine());
 
             eng.Init(true, asymmetricCipherKey);
 
@@ -159,23 +177,52 @@ namespace NotificationPayload.Models
             return Convert.ToBase64String(cipherTextBytes.ToArray());
         }
 
-        public void SaveEncryptedPayloadLog(Payload payload)
+        public void SaveEncryptedPayloadLog(Payload payload, string path, string error)
         {
             String timeStamp = DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss-ffff");
-            string path = @"E:\Paynow\Logs\Payload_" + timeStamp +".txt";
-            if (!File.Exists(path))
+            string actualpath = path + timeStamp + ".json";
+
+            if (!File.Exists(actualpath))
             {
-                // Create a file to write to.
-                using (StreamWriter sw = File.CreateText(path))
+                using (StreamWriter sw = File.CreateText(actualpath))
                 {
-                    sw.WriteLine("EncryptedPayload=" + payload.EncryptedPayload);
-                    sw.WriteLine("EncryptedSessionKey=" + payload.EncryptedSessionKey);
-                    sw.WriteLine("Iv=" + payload.Iv);
-                    sw.WriteLine("PayloadSignature=" + payload.PayloadSignature);                   
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        payload.Error = error;
+                    }
+                    JsonSerializer serializer = new JsonSerializer();
+                    serializer.Serialize(sw, payload);
                 }
             }
         }
-        
+
+        public void ValidateCertificate(X509Certificate2 x509Certificate2, bool checkPrivateKey)
+        {
+            if (x509Certificate2 == null)
+                throw new Exception("A x509 certificate and string for decryption must be provided");
+
+            if (checkPrivateKey && !x509Certificate2.HasPrivateKey)
+                throw new Exception("x509 certicate does not contain a private key for decryption");
+
+            if (!x509Certificate2.Verify())
+                throw new Exception("x509 certicate in valid");
+        }
+        public string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
+
+        public Payload ProcessFile(string fileName)
+        {
+            Payload payload = null;
+            using (StreamReader r = new StreamReader(fileName))
+            {
+                string json = r.ReadToEnd();
+                payload = JsonConvert.DeserializeObject<Payload>(json);
+            }
+            return payload;
+        }
 
     }
 }

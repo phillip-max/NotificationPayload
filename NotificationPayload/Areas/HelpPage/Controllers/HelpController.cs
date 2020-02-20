@@ -1,8 +1,8 @@
+using NotificationPayload.Areas.HelpPage.ModelDescriptions;
+using NotificationPayload.Areas.HelpPage.Models;
 using System;
 using System.Web.Http;
 using System.Web.Mvc;
-using NotificationPayload.Areas.HelpPage.ModelDescriptions;
-using NotificationPayload.Areas.HelpPage.Models;
 
 namespace NotificationPayload.Areas.HelpPage.Controllers
 {

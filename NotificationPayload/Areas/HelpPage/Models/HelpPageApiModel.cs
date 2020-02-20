@@ -1,8 +1,8 @@
+using NotificationPayload.Areas.HelpPage.ModelDescriptions;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http.Headers;
 using System.Web.Http.Description;
-using NotificationPayload.Areas.HelpPage.ModelDescriptions;
 
 namespace NotificationPayload.Areas.HelpPage.Models
 {

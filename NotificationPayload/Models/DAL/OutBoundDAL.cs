@@ -83,7 +83,6 @@ namespace NotificationPayload.Models.DAL
                 cmd.Parameters.Add("@TransactionType", SqlDbType.NVarChar).Value = account.TransactionType ?? string.Empty;
                 cmd.Parameters.Add("@YourReference", SqlDbType.NVarChar).Value = account.YourReference ?? string.Empty;
                 cmd.Parameters.Add("@OriginalAccNo", SqlDbType.NVarChar).Value = account.TransactionText ?? string.Empty;
-
                 cmd.Connection = con;
                 con.Open();
                 cmd.ExecuteNonQuery();
